@@ -6,6 +6,7 @@ Analyzes RHACS deployments and reassesses risks using AI-powered analysis
 
 import json
 import sys
+import os
 import requests
 from datetime import datetime, timezone
 from typing import Dict, List, Any, Optional
@@ -15,9 +16,16 @@ from exploit_checker import ExploitChecker
 # Disable SSL warnings for demo environment
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# RHACS Configuration
-RHACS_URL = "https://staging.demo.stackrox.com"
-API_TOKEN = "eyJhbGciOiJSUzI1NiIsImtpZCI6Imp3dGswIiwidHlwIjoiSldUIn0.eyJhdWQiOiJodHRwczovL3N0YWNrcm94LmlvL2p3dC1zb3VyY2VzI2FwaS10b2tlbnMiLCJleHAiOjE4MDY1NTIwMDAsImlhdCI6MTc3NTc2NjI5MiwiaXNzIjoiaHR0cHM6Ly9zdGFja3JveC5pby9qd3QiLCJqdGkiOiI5ZmE3NmEyYy00NGU4LTRkYjMtYTRmZi1lZTk1Mzg1NTM0YWUiLCJuYW1lIjoiZGMtcmlzay1wcmlvIiwicm9sZXMiOlsiQWRtaW4iXX0.j8XinLqp5lrj9gC1C91uJNZm-BNpD83WMHKI1ITLDb1LVPW7ZJw_aELTXFLl8wSUjl5jDCUgNM0i3zjTmwcQFlqdIHk9-yLG8z49q4iKoOIdy8NydbOqbOLYZLrRGr6nMKE0za8Fk1aWWhMZ6JI5UOvde8KWyVXfaRBfgk9KacE7m4EbeCfiM7o9vebVYXuuTIXOVC6BoIPG2ZhJhSPVWBasquVp-4woL1tI_bBQPG7JsFuNiH5Eq64SP2i1r-VsGTcmOH0ZcY9IJ-DT69jJPBH_udv5bbqrRJHRE4ExMAJAdE_6G_8Yfb0tHeqN9zV-yyvdoe72BRQzk-9A3ZfGmch5T8Rm1_O_U2VdY4w91lLnJ6sFd_QWCXdyjW2uJDYGfNL0s3_opV-QudVTfX8gSK-0FeyT8pvKt4ybNOUOUuWK28GCGc50oQNn36neXwPR0EJZLdawF4T5WnSSfT8Au4GW6DpK6GMVYTeDB7IpqRt2KhRnyKVIcS-UriXUnBItY1S6CqtR5gYnvVwJ3z9abTHh6XkNf8wtkU9gbvGOSV-yjyYYRhT95tKhCvKBrmNV46jQ-HgvWAHDE1CLkDuUNd4J7JRRPzk6omBBPK-NVFVEx3x_bjgQAYHm0HP06Iik1PTZfq7iT5BIvydLOb3Wn4JvoOl6rWcw5BdBgO8otAk"
+# RHACS Configuration from environment variables
+# For demo/testing, you can set these in your environment or use .env file
+RHACS_URL = os.getenv('RHACS_URL', 'https://your-rhacs-instance.com')
+API_TOKEN = os.getenv('RHACS_API_TOKEN', '')
+
+# Validate configuration
+if not API_TOKEN:
+    print("WARNING: RHACS_API_TOKEN not set. Please configure your API token.", file=sys.stderr)
+    print("Set environment variable: export RHACS_API_TOKEN='your-token-here'", file=sys.stderr)
+    print("Or create a .env file with your credentials.", file=sys.stderr)
 
 class RHACSAnalyzer:
     """Analyzer for RHACS deployment risk assessment"""

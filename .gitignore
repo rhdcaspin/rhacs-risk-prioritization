@@ -41,6 +41,8 @@ Thumbs.db
 *_analysis.json
 *_analysis_*.json
 analysis.json
+analysis_with_exploits.json
+analysis_with_exploits_clean.json
 deployment_data.json
 final_analysis.json
 test_analysis.json
