@@ -13,6 +13,13 @@ from typing import Dict, List, Any, Optional
 import urllib3
 from exploit_checker import ExploitChecker
 
+# Load environment variables from .env file if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv not installed, use system environment only
+
 # Disable SSL warnings for demo environment
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

@@ -232,8 +232,9 @@ Generate a `risk.json` file with the following structure:
 4. For significant CVEs, check exploit maturity and perform applicability reassessment
 5. Calculate overall Gen AI Priority score (0-100)
 6. Generate comprehensive risk.json output with all assessments
-7. **Generate human-readable report** using report_generator.py
-8. Display both JSON and human-readable summary to the user
+7. **Generate markdown report** with full AI analysis and recommendations
+8. Save the markdown report to a file
+9. Display console summary to the user
 
 ## Human-Readable Output
 
@@ -331,32 +332,231 @@ Generate THREE outputs:
 ### 1. risk.json (Machine-Readable)
 Complete JSON with all data and AI assessments for automation and tooling.
 
-### 2. risk_report.txt (Human-Readable)
-Formatted text report with visual indicators, clear explanations, and actionable recommendations for security teams.
+Save the enriched JSON with AI assessments:
+```json
+{
+  "deploymentId": "{{deployment_id}}",
+  "deploymentName": "...",
+  "genAIPriority": 85,
+  "genAIPriorityExplanation": "...",
+  "suspiciousProcessExecutions": [...],  // with AI classifications
+  "imageVulnerabilities": [...],         // with exploit maturity and AI assessments
+  "exploitMaturitySummary": {...},
+  "recommendations": [...]
+}
+```
+
+### 2. risk_report.md (Markdown Report - PRIMARY OUTPUT)
+
+Generate a **comprehensive GitHub-flavored markdown report** and save it to a file named:
+```
+risk_report_{deployment_name}_{deployment_id[:8]}.md
+```
+
+The markdown report must include:
+
+#### Report Structure:
+
+```markdown
+# 🔒 RHACS Risk Analysis: {deployment_name}
+
+**Deployment ID**: `{deployment_id}`
+**Namespace**: {namespace}
+**Cluster**: {cluster}
+**Analysis Date**: {timestamp}
+**Original RHACS Risk Score**: {score}/100
+
+---
+
+## 🎯 Gen AI Priority Assessment
+
+### Overall Priority: **{score}/100 ({CRITICAL|HIGH|MEDIUM|LOW})** {🔴|🟠|🟡|🟢}
+
+**Executive Summary:**
+[2-3 paragraph summary explaining the actual risk vs RHACS score]
+
+**Key Findings:**
+- ✅/⚠️/🔴 Known Exploited CVEs: {count}
+- ✅/⚠️/🔴 Weaponized CVEs: {count}
+- ✅/⚠️/🔴 High-Severity CVEs: {count}
+- ✅/⚠️/🔴 Suspicious Processes: {count}
+- ✅/⚠️/🔴 Security Posture: {assessment}
+
+---
+
+## 🔐 Vulnerability Analysis
+
+### Summary Statistics
+[Table with vuln counts, exploit maturity breakdown]
+
+### Critical CVEs (Top 10)
+
+#### 1. CVE-XXXX-XXXXX ({component}) - CVSS {score} {🔴|🟠}
+**Severity**: {CRITICAL|HIGH}
+**Exploit Maturity**: {icon} {CRITICAL|HIGH|MEDIUM|LOW|THEORETICAL} (Score: {0-100}/100)
+**Component**: {name} (version {X})
+**Fix Available**: ✅/❌ **{version}**
+
+**AI Assessment**: **{HIGH|MEDIUM|LOW} PRIORITY**
+
+**Vulnerability Summary**: [Brief description]
+
+**Runtime Applicability**: **{HIGH|MODERATE|LOW}**
+[Detailed explanation of whether this CVE can be exploited in this specific runtime environment]
+
+**Adjusted CVSS**: **{score}** (adjusted from {original} due to {reason})
+
+**Recommendation**: [Specific action with timeline]
+
+---
+
+[Repeat for each critical CVE]
+
+---
+
+## ⚙️ Process Execution Analysis
+
+**RHACS Flagged as Suspicious**: {count}
+**AI Reassessment**: **{high} HIGH RISK, {medium} MEDIUM RISK, {low} LOW RISK**
+
+### Process Classification Summary
+[Table showing risk levels and counts]
+
+### Detailed Process Reassessment
+
+#### HIGH RISK Processes {🔴}
+
+**1. {process_name}**
+
+**RHACS Classification**: {Suspicious|Not Flagged}
+**AI Classification**: **HIGH RISK** 🔴
+
+**Process Details:**
+```bash
+{full command line}
+```
+
+**AI Explanation**:
+[Detailed explanation of why this is high risk, what it indicates, and potential impact]
+
+**Recommendation**: [Specific action]
+
+---
+
+[Repeat for each process category]
+
+---
+
+## 🎯 Risk Factor Summary
+
+| Factor | Value | Impact |
+|--------|-------|--------|
+| **Known Exploited CVEs** | {count} | {impact} |
+| **Weaponized CVEs** | {count} | {impact} |
+| ... | ... | ... |
+
+---
+
+## 📋 Actionable Recommendations
+
+### 🔴 IMMEDIATE ACTION (Within 24-48 Hours)
+1. [Action 1]
+2. [Action 2]
+
+### 🟠 URGENT (Within 1-2 Weeks)
+1. [Action 1]
+2. [Action 2]
+
+### 🟡 IMPORTANT (Within 1 Month)
+1. [Action 1]
+2. [Action 2]
+
+### ℹ️ GENERAL IMPROVEMENTS (Continuous)
+1. [Action 1]
+2. [Action 2]
+
+---
+
+## 📊 Gen AI Priority Score Breakdown
+
+```
+Overall Gen AI Priority: {score}/100 ({LEVEL})
+
+Calculation:
+├─ Known Exploited CVEs ({count}):    {points} points  (weight: 40)
+├─ Weaponized CVEs ({count}):         {points} points  (weight: 25)
+├─ High-Severity Applicable ({count}): {points} points  (weight: 15)
+├─ Suspicious Processes ({count}):    {points} points  (weight: 10)
+├─ Security Posture:                  {points} points  (bonus/penalty)
+└─ Total:                             {score}/100
+```
+
+---
+
+## 🎯 Final Assessment
+
+**Bottom Line**: [Executive summary for leadership]
+
+**Timeline**: [Recommended remediation timeline]
+
+---
+
+## 📄 Generated Files
+
+✅ **risk_{deployment_id}.json** - Machine-readable analysis
+📊 **This report** - Human-readable executive summary
+
+---
+
+**Analysis Complete** | Gen AI Priority: {score}/100 | Generated: {timestamp}
+```
+
+**Important**: 
+- Use proper markdown formatting (headers, tables, code blocks, lists)
+- Include emoji indicators for visual clarity
+- Provide specific, actionable recommendations with timelines
+- Explain technical details in plain language for non-technical stakeholders
+- Include code examples for remediation where applicable
+- Use tables for structured data
+- Include horizontal rules (---) to separate major sections
 
 ### 3. Console Summary (Interactive)
-Display to the user:
+
+After saving the markdown report, display to the user:
 ```
 ✅ Analysis Complete for deployment: {{deployment_id}}
 
 📊 RISK ASSESSMENT
-   Overall Priority: 85/100 (🟠 HIGH)
+   Overall Priority: {score}/100 ({🔴|🟠|🟡|🟢} {LEVEL})
    
    🔍 Key Findings:
-   • 1 CVE actively exploited (CISA KEV)
-   • 1 high-risk process detected
-   • 3 immediate action items
+   • {count} CVE(s) actively exploited (CISA KEV)
+   • {count} high-risk process(es) detected
+   • {count} immediate action item(s)
    
-   📄 Full reports generated:
-   • risk.json (machine-readable)
-   • risk_report.txt (human-readable)
+   📄 Reports Generated:
+   • risk_{deployment_id}.json (machine-readable)
+   • risk_report_{deployment_name}_{deployment_id[:8]}.md (markdown report)
    
-   🚨 IMMEDIATE ACTION REQUIRED:
-   1. Update log4j-core to 2.17.1+ (CVE-2021-44228)
-   2. Investigate wget process execution
+   {🚨|⚠️|ℹ️} {PRIORITY} ACTION REQUIRED:
+   1. [Top recommendation 1]
+   2. [Top recommendation 2]
+   3. [Top recommendation 3]
    
-   Run: cat risk_report.txt
-   For full details and all recommendations.
+   📖 View full analysis:
+   cat risk_report_{deployment_name}_{deployment_id[:8]}.md
 ```
+
+---
+
+## Final Workflow
+
+1. Run analyzer: `python3 rhacs_analyzer.py analyze {{deployment_id}} --exploits > deployment_data.json`
+2. Extract clean JSON (remove stderr): `grep -A 99999 '^{' deployment_data.json > risk_clean.json`
+3. Parse JSON and perform AI analysis
+4. Save enriched JSON with AI assessments to `risk_{deployment_id}.json`
+5. **Generate comprehensive markdown report** following the structure above
+6. **Save markdown report** to `risk_report_{deployment_name}_{deployment_id[:8]}.md`
+7. Display console summary
 
 Begin the analysis now for deployment ID: {{deployment_id}}
