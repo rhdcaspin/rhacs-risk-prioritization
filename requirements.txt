@@ -1,0 +1,10 @@
+# RHACS Risk Prioritization Dependencies
+
+# HTTP requests
+requests>=2.31.0
+
+# Disable SSL warnings for demo environment
+urllib3>=2.0.0
+
+# Optional: Environment variable management
+python-dotenv>=1.0.0

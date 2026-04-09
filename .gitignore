@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Analysis outputs (keep examples, ignore working files)
+*_analysis.json
+*_analysis_*.json
+analysis.json
+deployment_data.json
+final_analysis.json
+test_analysis.json
+demo_analysis.json
+vuln_full.json
+full_deployment.json
+
+# Reports (keep examples, ignore working files)
+*_report.txt
+analysis_report.txt
+report.csv
+risk_report.txt
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Logs
+*.log
+
+# API keys and secrets (if any are accidentally added)
+.env
+.env.local
+secrets.json
+credentials.json
+
+# Keep example files
+!sample_risk_data.json
+!sample_risk_data_report.txt
+!complete_analysis.json
+!deployment_summary.json
+!exploit_maturity_report.json
