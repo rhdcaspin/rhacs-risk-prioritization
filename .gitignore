@@ -37,21 +37,30 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Analysis outputs (keep examples, ignore working files)
+# Analysis outputs (ignore ALL working files and results)
 *_analysis.json
 *_analysis_*.json
-analysis.json
-analysis_with_exploits.json
-analysis_with_exploits_clean.json
+*_analysis*.json
+analysis*.json
+risk_*.json
+risk_*.md
 deployment_data.json
 final_analysis.json
 test_analysis.json
 demo_analysis.json
 vuln_full.json
 full_deployment.json
+complete_analysis.json
+deployment_summary.json
+exploit_maturity_report.json
 
-# Reports (keep examples, ignore working files)
+# Reports (ignore ALL report files)
 *_report.txt
+*_report.md
+*_report*.txt
+*_report*.md
+risk_report_*.md
+risk_report*.txt
 analysis_report.txt
 report.csv
 risk_report.txt
@@ -70,9 +79,6 @@ risk_report.txt
 secrets.json
 credentials.json
 
-# Keep example files
+# Keep ONLY example/sample files for documentation
 !sample_risk_data.json
 !sample_risk_data_report.txt
-!complete_analysis.json
-!deployment_summary.json
-!exploit_maturity_report.json
