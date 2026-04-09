@@ -1,0 +1,48 @@
+{
+  "deployment": {
+    "id": "83d64f14-3784-4a45-b12e-606cd323639d",
+    "name": "shaggy",
+    "namespace": "default",
+    "cluster": "staging-secured-cluster",
+    "originalRiskScore": 31.05
+  },
+  "statistics": {
+    "totalProcesses": 20,
+    "suspiciousProcesses": 0,
+    "totalCVEs": 219,
+    "criticalCVEs": 3,
+    "highCVEs": 28
+  },
+  "topCVEs": [
+    {
+      "cve": "CVE-2005-2541",
+      "cvss": 10,
+      "component": "tar",
+      "severity": "LOW_VULNERABILITY_SEVERITY"
+    },
+    {
+      "cve": "CVE-2019-1010022",
+      "cvss": 9.8,
+      "component": "libc6",
+      "severity": "LOW_VULNERABILITY_SEVERITY"
+    },
+    {
+      "cve": "CVE-2019-1010022",
+      "cvss": 9.8,
+      "component": "libc-bin",
+      "severity": "LOW_VULNERABILITY_SEVERITY"
+    },
+    {
+      "cve": "CVE-2019-1010023",
+      "cvss": 8.8,
+      "component": "libc6",
+      "severity": "LOW_VULNERABILITY_SEVERITY"
+    },
+    {
+      "cve": "CVE-2019-1010023",
+      "cvss": 8.8,
+      "component": "libc-bin",
+      "severity": "LOW_VULNERABILITY_SEVERITY"
+    }
+  ]
+}
