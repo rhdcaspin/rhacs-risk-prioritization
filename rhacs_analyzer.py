@@ -206,7 +206,10 @@ class RHACSAnalyzer:
         images = result.get('images', [])
 
         for image in images:
-            scan = image.get('scan', {})
+            scan = image.get('scan')
+            if not scan:
+                # Image not scanned or scan failed
+                continue
             components = scan.get('components', [])
 
             for component in components:
